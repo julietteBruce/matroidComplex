@@ -62,7 +62,7 @@ diffMatrixColumn (Matroid, List) := (M,targetBasis)-> (
                 )
         ))
     ));
-    -- return unmutiple list
+    -- return immutable list
     toList(column)
 )
 
@@ -82,6 +82,29 @@ diffMatrixColumn (Matroid, List) := (M,targetBasis)-> (
 -------------------------------------------------------------------- 
 
 diffMatrix = method();
-diffMatrix (List,List) = (sourceBasis, targetBasis) - > (
+diffMatrix (List,List) := (sourceBasis, targetBasis) -> (
     transpose matrix apply(sourceBasis, M -> diffMatrixColumn(M,targetBasis))
+)
+
+----------------------------- diffMaps -----------------------------
+--------------------------------------------------------------------
+----- INPUT: List
+-----
+----- OUTPUT: List
+-----
+----- DESCRIPTION: Given an ordered list of matroid bases for a 
+----- subcomplex of C_* of the form 
+-----    {basis of C_n,  basis of C_{n-1}, ... , basis of C_{n-k}},
+----- return the corresponding list of deletion differential matrices
+-----    {D_n, D_{n-1}, ... , D_{n-k+1}}.
+----- This can then become the input for M2's built in chainComplex
+----- method.
+--------------------------------------------------------------------
+-------------------------------------------------------------------- 
+
+diffMaps = method();
+diffMaps (List) := (subcomplexBases)  -> (
+    apply( #subcomplexBases - 1, 
+        i -> diffMatrix(subcomplexBases#i,subcomplexBases#(i + 1))
+    )
 )
