@@ -1,35 +1,35 @@
 needsPackage "Matroids"
+importFrom("SpechtModule", {"permutationSign"})
 
--------------------------- diffMatrixColumn ------------------------
+--------------------------- withoutOddAut --------------------------
 --------------------------------------------------------------------
 ----- INPUT: Matroid
 -----
------ OUTPUT: List
+----- OUTPUT: Boolean
 -----
------ DESCRIPTION: Given a Matroid, return a list of coloops as 
------ singletons.
+----- DESCRIPTION: Returns true if a matroid admits an odd 
+----- automorphism, and false otherwise.
 --------------------------------------------------------------------
 -------------------------------------------------------------------- 
-
-noncoloops = method();
-noncoloops (Matroid) := (M) -> (
-    apply(toList(groundSet M - coloops M), x -> set {x})
+withoutOddAut = method();
+withoutOddAut(Matroid) := (M) -> (
+    not any(getIsos(M,M), perm -> permutationSign(perm) == -1)
 )
 
--------------------------- diffMatrixColumn ------------------------
+--------------------------- rankedBases --------------------------
 --------------------------------------------------------------------
------ INPUT: Matroid
+----- INPUT: (Number, Number) = (n,r)
 -----
 ----- OUTPUT: List
 -----
------ DESCRIPTION: Given a Matroid M, return a list of deletion 
------ matroids corresponding to each nonloop in the ground set of M.
+----- DESCRIPTION: Given a pair (n,r), r <= n <= 9, return a list of
+----- matroids in allMatroids(n,r) without odd automorphisms. This
+----- is a basis for C_n^r.
 --------------------------------------------------------------------
 -------------------------------------------------------------------- 
-
-deletions = method();
-deletions (Matroid) := (M) -> (
-    apply(noncoloops(M), e -> deletion(M,e))
+rankedBases = method();
+rankedBases(Number,Number) := (n,r) -> (
+    select(allMatroids(n,r), withoutOddAut)
 )
 
 -------------------------- diffMatrixColumn ------------------------
@@ -52,13 +52,14 @@ diffMatrixColumn (Matroid, List) := (M,targetBasis)-> (
     ---- Initialize zero column vector {0,...,0} as mutable list
     column := new MutableList from apply(#targetBasis, i -> 0);
 
+    noncoloops := toList(groundSet M - coloops M);
+
     -- Rewrite alternating sum of deletion matroid classes in C_{n-1} 
     -- to the corresponding sum in QQ^{dim C_{n-1}} wrt the std basis
-    sumTerms := deletions(M);
-    scan(#sumTerms, i -> (
+    scan(noncoloops, e -> (
         scan(#targetBasis, j -> (
-            if areIsomorphic(sumTerms#i,targetBasis#i) then (
-                column#j = column#j + (-1)^i
+            if areIsomorphic(deletion(M, set {e}),targetBasis#j) then (
+                column#j = column#j + (-1)^(e+1)
                 )
         ))
     ));
