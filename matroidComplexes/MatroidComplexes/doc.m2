@@ -1,6 +1,6 @@
 doc ///
    Key 
-      P1P1Syzygies
+      MatroidComplexes
    Headline 
       syzygy data for  embeddings of $\mathbb P^1 x \mathbb P^1$
    Description
