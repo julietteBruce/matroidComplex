@@ -16,7 +16,7 @@
 -- this program.  If not, see <http://www.gnu.org/licenses/>.
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
--- PURPOSE : Tools for completing matroid chain complex
+-- PURPOSE : Tools for computing the matroid chain complex
 --
 --
 -- PROGRAMMERS : Juliette Bruce, Benjamin Ashlock, Jacob Bucciarelli, Bailee Zacovic
@@ -41,7 +41,7 @@
 newPackage("MatroidComplexes",
     Version => "1.0",
     Date => "01 August 2023",
-    Headline => "Tools for completing matroid chain complex",
+    Headline => "Tools for computing the matroid chain complex",
     Authors => {
         {Name => "Juliette Bruce",           Email => "juliette.bruce@berkeley.edu",       HomePage => "https://juliettebruce.github.io"},
         {Name => "Benjamin Ashlock",           Email => "bak6t@missouri.edu"},
