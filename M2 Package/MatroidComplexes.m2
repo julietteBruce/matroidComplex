@@ -43,11 +43,23 @@ newPackage("MatroidComplexes",
     Date => "01 August 2023",
     Headline => "Tools for computing the matroid chain complex",
     Authors => {
-        {Name => "Juliette Bruce",           Email => "juliette.bruce@berkeley.edu",       HomePage => "https://juliettebruce.github.io"},
-        {Name => "Benjamin Ashlock",           Email => "bak6t@missouri.edu"},
-        {Name => "Jacob Bucciarelli",             Email => "jbucciarelli@ksu.edu"},	     
-        {Name => "Bailee Zacovic",          Email => "bzacovic@umich.edu"},
-	},
+        {
+            Name => "Juliette Bruce",
+            Email => "juliette.bruce@berkeley.edu",
+            HomePage => "https://juliettebruce.github.io"
+        },
+        {
+            Name => "Benjamin Ashlock",
+            Email => "bak6t@missouri.edu"
+        },
+        {
+            Name => "Jacob Bucciarelli",
+            Email => "jbucciarelli@ksu.edu"
+        },	     
+        {
+            Name => "Bailee Zacovic",          
+            Email => "bzacovic@umich.edu"
+    }},
   DebuggingMode => true,
   AuxiliaryFiles => true
   )
