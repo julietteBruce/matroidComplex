@@ -46,6 +46,12 @@ TEST ///
     C = diffMatrixColumn(M,targetBasis);
     assert (C == {0,0})
 ///
+TEST ///
+    M = wheel 3;
+    targetBasis = rankedBasis(5,3);
+    C = diffMatrixColumn(M,targetBasis);
+    assert (C == {0,0})
+///
 
 --------------------------------------------------------------------
 --------------------------------------------------------------------
@@ -55,7 +61,7 @@ TEST ///
 TEST ///
     sourceBasis = rankedBasis(7,3);
     targetBasis = rankedBasis(6,3);
-    M = diffMatrix(sourceBasis,targetBasis);
+    D = diffMatrix(sourceBasis,targetBasis);
     assert (M == matrix{{-1,-1,0,0,0,0,-1,-1,0},{0,0,-1,-1,-1,-1,1,0,-1}})
 
 ///

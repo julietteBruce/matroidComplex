@@ -27,8 +27,8 @@ withoutOddAut(Matroid) := (M) -> (
 ----- is a basis for C_n^r.
 --------------------------------------------------------------------
 -------------------------------------------------------------------- 
-rankedBases = method();
-rankedBases(Number,Number) := (n,r) -> (
+rankedBasis = method();
+rankedBasis(Number,Number) := (n,r) -> (
     select(allMatroids(n,r), withoutOddAut)
 )
 
