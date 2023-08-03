@@ -2,7 +2,7 @@ doc ///
    Key 
       MatroidComplexes
    Headline 
-      syzygy data for  embeddings of $\mathbb P^1 x \mathbb P^1$
+      Tools for computing the matroid chain complex
    Description
     Text
       The authors of package used a combination of high throughput
@@ -32,267 +32,116 @@ doc ///
 
 doc ///
    Key 
-    makeBettiTally
-    (makeBettiTally,HashTable)
+    withoutOddAut
+    (withoutOddAut,Matroid)
    Headline
-    converts a hash table representing a Betti table to a Betti tally
+    determines if a matroid admits odd automorphisms
    Usage
-    makeBettiTally(H)
+    withoutOddAut(M)
    Inputs
-    H: HashTable
+    M: Matroid
    Outputs
-    : BettiTally
+    : Boolean
    Description
     Text
-      Given a hash table $H$ whose keys are pairs of integers $(p,q)$ 
-      this function presents the data in the Betti tally format.
-      For instance, combining this with the @ TO totalBetti @ function reproduces
-      the standard Betti table.  By contrast, combining this with the
-      numRepsBetti function produces a table where the entry in position
-      $(p,q)$ is the number of Schur functors in the representation corresponding
-      to that Betti table entry.
+      Internally, a matroid $M$ on $n$ ground set elements is identified on the ground set 
+      $\{0,1,2,\dots,n-1\}.$ Thus, any automorphism of $M$ is given by a permutation of 
+      $\{0,1,2,\dots,n-1\}.$ Given a matroid $M$, this method checks whether the sign of any
+      such permutation is negative, corresponding to an odd automorphism, and returns "true" 
+      if a negative permutation is found, otherwise returns "false". 
+      
+      Those matroids which admit odd automorphisms vanish in the matroid complex. In the 
+      example below, we ask whether the uniform matroids $U_{2,4}$ admits odd automorphisms. 
+      That is, a matroid automorphism given by an odd permutation of its ground set $\{0,1,2,3\}.$
     Example
-      H = totalBettiP1P1({0,0},{2,4});
-      makeBettiTally H
+      M = uniformMatroid(2,4);
+      withoutOddAut(M)
 
 ///
 
 doc ///
    Key 
-    totalBettiP1P1
-    (totalBettiP1P1,List,List)
+    rankedBasis
+    (rankedBasis,Number,Number)
    Headline
-    a hash table containing the graded Betti numbers of $\mathbb P^1 x \mathbb P^1$
+    a list containing the basis elements of $C^r_n$
    Usage
-    totalBettiP1P1(B,D)
+    rankedBasis(n,r)
    Inputs
-    B: List
-    D: List
-   Outputs
-    : HashTable
-   Description
-    Text
-      This is a hash table for the total numbers of $\mathcal{O}(B)$
-      under the embedding by $\mathcal{O}(D)$. The keys of the hash
-      table $H$ are pairs $(p,q)$ where $H#(p,q)$ gives the rank of 
-      $K_{p,q}(\mathbb P^1 x \mathbb P^1,B;D)$. This equals the Betti number
-      $\beta_{p,p+q}(\mathbb P^1 x \mathbb P^1,B;D)$.Some tables are incomplete and 
-      we mark unknown entries with infinity.
-      
-      Note that totalBetti differs from @ TO totalBettiTally @ only in that the output is 
-      a hash table instead of a Betti tally. One can convert the output of
-      totalBetti into a Betti tally via the @ TO makeBettiTally @ function.
-
-      
-      In example below we generate a hash table showing the total graded Betti numbers
-      of $\mathbb{P}^1 x \mathbb{P}^1$ embedded by $\mathcal{O}(2,4)$. 
-    Example
-      B = totalBettiP1P1({0,0},{2,4})
-    Text  
-      If we wish to view these graded Betti numbers in the usual fashion, we can use
-      makeBettiTally to convert the hash table above to a Betti tally.
-    Example
-      makeBettiTally B  
-///
-
-doc ///
-   Key 
-    totalBettiTallyP1P1
-    (totalBettiTallyP1P1,List,List)
-   Headline
-    a Betti tally containing the graded Betti numbers of an embedding of $\mathbb{P}^1 x \mathbb{P}^1$
-   Usage
-    totalBettiTallyP1P1(B,D)
-   Inputs
-    B: List
-    D: List
-   Outputs
-    : BettiTally
-   Description
-    Text
-      This function returns a Betti tally for the total graded Betti numbers 
-      of $\mathcal{O}(B)$ under the embedding by 
-      $\mathcal{O}(D)$. Some tables are incomplete and we mark
-      unknown entries with infinity.
-      
-      Note that totalBettiTally differs from @ TO totalBetti @ only in that the output is 
-      a Betti tally instead of a hash table. 
-      
-      In example below we generate a hash table showing the total graded Betti numbers
-      of $\mathbb{P}^1 x \mathbb{P}^1$ embedded by $\mathcal{O}(2,4)$. 
-    Example
-      totalBettiTallyP1P1({0,0},{2,4})
-    Text
-      We can also produce the Betti tables of the pushforwards of line bundles.  For instance,
-      the following example computes the Betti table of the
-      pushforward of $\mathcal{O}(1,1)$ under
-      the embedding given by $\mathcal{O}(2,4)$.
-    Example
-      totalBettiTallyP1P1({1,1},{2,4})  
-///
-
-doc ///
-   Key 
-    schurBettiP1P1
-    (schurBettiP1P1,List,List)
-   Headline
-    a hash table for Schur module decomposition of a Betti table of an embedding of $\mathbb{P}^1 x \mathbb{P}^1$
-   Usage
-    schurBettiP1P1(B,D)
-   Inputs
-    B: List
-    D: List
-   Outputs
-    : HashTable
-   Description
-    Text
-      This function returns a hash table with the Schur functor decompositions 
-      of the syzygies of $\mathcal{O}(B)$ under the embedding by
-      $\mathcal{O}(D)$. The keys of the hash
-      table $H$ are pairs $(p,q)$ where $H#(p,q)$ gives the the Schur functor 
-      decomposition of $K_{p,q}(\mathbb P^1 x \mathbb P^1,B;D)$. $\mathcal{O}(D)$ the 
-      Schur functor decomposition as a list of tuples $(\{a_1,a_2,a_3,a_{4|\},m)$ where
-      $\{a_1,a_2,a_3,a_{4}\}$ specifies the weight of the Schur functor and $m$ the multiplicty
-      with which that particular Schur functor appears in the decomposition
-      of $K_{p,q}(\mathbb P^1 x \mathbb P^1,B;D)$. 
-      
-      Some tables are incomplete and we mark unknown entries with 
-      ({0,0,0,0},infinity).
-      
-    Example
-      schurBettiP1P1({0,0},{2,4})
-///
-doc ///
-   Key
-    multiBettiP1P1
-    (multiBettiP1P1,List,List)
-   Headline
-    a hash table containing the multigraded Betti numbers of an embedding of $\mathbb{P}^1 x \mathbb{P}^1$
-   Usage
-    multiBettiP1P1(B,D)
-   Inputs
-    B: List
-    D: List
-   Outputs
-    : HashTable
-   Description
-    Text
-      This function returns a hash table $H$ containing the multigraded Betti numbers
-      for $\mathcal{O}(B)$ on $\mathbb P^1 x \mathbb P^1$ under the embedding by
-      $D$-fold Veronese embedding given by $\mathcal{O}(D)$. The keys 
-      of the returned hash table $H$ are pairs $(p,q)$ where $H#(p,q)$ gives the the
-      multigraded Betti decomposition of $K_{p,q}(\mathbb P^1 x \mathbb P^1,B;D)$. We record the 
-      multigraded Betti numbers via a multigraded Hilbert series.
-      
-      Note that the output of this function is sometimes enormous and so
-      can take a long time to print on the screen.
-    Example
-      multiBettiP1P1({0,0},{2,4})
-///
-
-doc ///
-   Key 
-    repsWithoutMultiplicityP1P1
-    (repsWithoutMultiplicityP1P1,HashTable)
-   Headline
-    removes mulplicities from a hash table of Schur functors of an embedding of $\mathbb{P}^1 x \mathbb{P}^1$ 
-   Usage
-    numDistinctRepsBettiP1P1(H)
-   Inputs
-    H: HashTable
-   Outputs
-    : HashTable
-   Description
-    Text
-      This function removes the mulitplicities from a hash table representing the Schur functors of an 
-      embedding of $\mathbb{P}^1 x \mathbb{P}^1$.
-      
-    Example
-      totalBettiTallyP1P1({0,0},{2,4})
-      schurBettiP1P1({0,0},{2,4})
-      repsWithoutMultiplicityP1P1 oo
-///
-
-doc ///
-   Key 
-    numDistinctRepsBettiP1P1
-    (numDistinctRepsBettiP1P1,List,List)
-   Headline
-    a hash table containing the number of distinct Schur functors of an embedding of $\mathbb{P}^1 x \mathbb{P}^1$ 
-   Usage
-    numDistinctRepsBettiP1P1(B,D)
-   Inputs
-    B: List
-    D: List 
-   Outputs
-    : HashTable
-   Description
-    Text
-      This function returns a hash table $H$ whose keys are pairs $(p,q)$ such that
-      the corresponding value $H#(p,q)$ is the number of distinct Schur functors
-      appearing in the Schur functor decomposition of $K_{p,q}(\mathbb P^1 x \mathbb P^1,B;D)$.
-      Note that the function @ TO numRepsBetti @ is similar, though it counts Schur functors
-      appearing with multiplicity.
-      
-    Example
-      totalBettiTallyP1P1({0,0},{2,4})
-      numDistinctRepsBettiP1P1({0,0},{2,4})
-      makeBettiTally oo
-///
-
-doc ///
-   Key 
-    numRepsBettiP1P1
-    (numRepsBettiP1P1,List,List)
-   Headline
-    a hash table containing the number of Schur functors of an embedding of $\mathbb{P}^1 x \mathbb{P}^1$
-   Usage
-    numRepsBettiP1P1(B,D)
-   Inputs
-    B: List
-    D: List 
-   Outputs
-    : HashTable
-   Description
-    Text
-      This function returns a hash table $H$ whose keys are pairs $(p,q)$ such that
-      the corresponding value $H#(p,q)$ is the number of Schur functors appearing
-      in the Schur functor decomposition of $K_{p,q}(\mathbb P^1 x \mathbb P^1,B;D)$ counted
-      with multiplicity. Note that the function @ TO numDistinctRepsBetti @ is similar, 
-      though that ignores the multiplicities of the Schur functors. 
-      
-    Example
-      totalBettiTallyP1P1({0,0},{2,4})
-      numRepsBettiP1P1({0,0},{2,4})
-      makeBettiTally oo
-///
-
--*doc ///
-   Key 
-    bsCoeffsP1P1
-    (bsCoeffsP1P1,ZZ,ZZ,ZZ)
-   Headline
-    a list of the Boij-Soederberg coefficents of a Veronese embedding 
-   Usage
-    bsCoeffs(d,n,b)
-   Inputs
-    d: ZZ
-    n: ZZ
-    b: ZZ 
+    n: Number
+    r: Number
    Outputs
     : List
    Description
     Text
-      This function returns a list of the Boij-Soederberg coefficents for the 
-      decomposition of the Betti table of $\mathcal{O}(b)$ on 
-      $\mathbb{P}^{n}$ under the $d$-fold Veronese embedding. See Section 6.3 of [BEGY].  Of course,
-      these coefficients and the corresponding pure diagrams are easily computed
-      by applying @ TO "BoijSoederberg::decompose(BettiTally)" @ from the BoijSoederberg
-      package to the corresponding totalBettiTally.
-      
+      Given a pair $(n,r)$, $0\leq r\leq n\leq n,$ this method returns a list of rank $r$ 
+      matroids on $n$ ground set elements which do not admit odd automorphisms. These matroids
+      constitute the basis of $C^r_n$ in the matroid complex.
+
+      In example below, we generate the basis of rank $3$ matroids on $6$ ground set elements. 
     Example
-      totalBettiTally(3,2,0)
-      bsCoeffs(3,2,0)
-      totalBettiTally(4,2,2)
-      bsCoeffs(4,2,2)
-///*-
+      rankedBasis(6,3)
+     
+///
+
+doc ///
+   Key 
+    diffMatrixColumn
+    (diffMatrixColumn,Matroid,List)
+   Headline
+    the column vector which is the image of a basis under the deletion differential with 
+    respect to standard bases
+   Usage
+    diffMatrixColumn(M,T)
+   Inputs
+    M: Matroid
+    T: List
+   Outputs
+    : List
+   Description
+    Text
+      Given a matroid representing a basis element of (a subspace of) C_n, return the corresponding column vector of the
+      matrix representing the deletion differential from C_n to C_{n-1}
+      with respect to the standard bases on Q^{dim C_n} and
+      Q^{dim C_{n-1}}.
+      
+      In example below, we begin by defining the cyclic matroid $M$ associated to the wheel graph $W_3$ (with three spokes), 
+      which is a element of the basis of $C^3_6,$ as can be verified by generating rankedBasis(6,3). Then, we generate the 
+      column vector associated to $M$ under the deletion differential from $C_6$ to $C_5$, with respect to the standard bases 
+      on $Q^{dim C_n}$ and $Q^{dim C_{n-1}}$.
+    Example
+      M = wheel 3;
+      targetBasis = rankedBasis(6,3);
+      diffMatrixColumn(M,targetBasis)
+  
+///
+
+doc ///
+   Key 
+    diffMatrix
+    (diffMatrix,List,List)
+   Headline
+    the matrix representing the deletion differential with respect to standard bases
+   Usage
+    diffMatrix(S,T)
+   Inputs
+    S: List
+    T: List
+   Outputs
+    : Matrix
+   Description
+    Text
+      Given the pair of bases for a subspace $V$ of $C_n$ and a basis for a subspace $W$
+      of $C_{n-1}$ containing the image of $V$ under the deletion differential, return the 
+      matrix representing the standard bases on $QQ^{dim V}$ and $QQ^{dim W}$, respectively. 
+      The first element of the first list will correspond to the basis vector 
+      $e_1 = (1,0,...,0)^T$, etc.
+ 
+      In the following example, we generate the matrix associated to the deletion differential 
+      from $C^3_7$ to $C^3_6$ with respect to the standard bases $QQ^9$ and $QQ^2,$ the dimensions
+      of which we verified by running rankedBasis(7,3) and rankedBasis(6,3), respectively. 
+    Example
+      sourceBasis = rankedBasis(7,3);
+      targetBasis = rankedBasis(6,3);
+      diffMatrix(sourceBasis,targetBasis)
+///
