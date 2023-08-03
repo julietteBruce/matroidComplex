@@ -60,6 +60,7 @@ newPackage("MatroidComplexes",
             Name => "Bailee Zacovic",          
             Email => "bzacovic@umich.edu"
     }},
+  PackageExports => {"Matroids","SpechtModule"},
   DebuggingMode => true,
   AuxiliaryFiles => true
   )
@@ -77,10 +78,10 @@ export {
 ----- CODE
 --------------------------------------------------------------------
 --------------------------------------------------------------------
-
+-*
 needsPackage "Matroids"
 importFrom("SpechtModule", {"permutationSign"})
-
+*-
 --------------------------- withoutOddAut --------------------------
 --------------------------------------------------------------------
 
