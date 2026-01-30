@@ -1,0 +1,100 @@
+# check whether a matroid admits an odd automorphism
+# -------------  Input:
+# matroid        A matroid object (as stored in Polymake)
+# -------------  Output:
+# Bool           true if the automorphism group contains an odd permutation
+
+function has_odd_automorphism(matroid)
+    P = collect(matroid.AUTOMORPHISM_GROUP.PERMUTATION_ACTION.GENERATORS)
+    sgns = Int[]
+    for p in P
+        w = Vector{Int}(p) .+ 1
+        push!(sgns, sign(perm(w)))
+    end
+    return -1 in sgns
+end
+
+# filter out matroids admitting odd automorphisms
+# -------------  Input:
+# matroids       Vector of matroid objects
+# -------------  Output:
+# Vector         Subvector of matroids with no odd automorphisms
+
+function without_odd_automorphisms(matroids)
+    return filter(M -> !has_odd_automorphism(M), matroids)
+end
+
+# filter out matroids with loops
+# -------------  Input:
+# matroids       Vector of matroid objects
+# -------------  Output:
+# Vector         Subvector of loopless matroids
+
+function without_loops(matroids)
+    return filter(M -> length(M.LOOPS) == 0, matroids)
+end
+
+# count simple rank-r matroids on n elements without odd automorphisms
+# -------------  Input:
+# n              Int, number of elements
+# r              Int, rank of the matroid
+# -------------  Output:
+# Int            Number of simple matroids with no odd automorphisms
+
+function ranked_basis_simple(n::Int, r::Int)
+    S = Polymake.Polydb.find(collection, Dict("RANK" => r, "N_ELEMENTS" => n, "SIMPLE" => true))
+    nums = length(without_odd_automorphisms(collect(S)))
+    return nums
+end
+
+# count regular rank-r matroids on n elements without odd automorphisms
+# -------------  Input:
+# n              Int, number of elements
+# r              Int, rank of the matroid
+# -------------  Output:
+# Int            Number of regular matroids with no odd automorphisms
+
+function ranked_basis_regular(n::Int, r::Int)
+    S = Polymake.Polydb.find(collection, Dict("RANK" => r, "N_ELEMENTS" => n, "REGULAR" => true))
+    nums = length(without_odd_automorphisms(collect(S)))
+    return nums
+end
+
+# count binary rank-r matroids on n elements without odd automorphisms
+# -------------  Input:
+# n              Int, number of elements
+# r              Int, rank of the matroid
+# -------------  Output:
+# Int            Number of binary matroids with no odd automorphisms
+
+function ranked_basis_binary(n::Int, r::Int)
+    S = Polymake.Polydb.find(collection, Dict("RANK" => r, "N_ELEMENTS" => n, "BINARY" => true))
+    nums = length(without_odd_automorphisms(collect(S)))
+    return nums
+end
+
+# count ternary rank-r matroids on n elements without odd automorphisms
+# -------------  Input:
+# n              Int, number of elements
+# r              Int, rank of the matroid
+# -------------  Output:
+# Int            Number of ternary matroids with no odd automorphisms
+
+function ranked_basis_ternary(n::Int, r::Int)
+    S = Polymake.Polydb.find(collection, Dict("RANK" => r, "N_ELEMENTS" => n, "TERNARY" => true))
+    nums = length(without_odd_automorphisms(collect(S)))
+    return nums
+end
+
+# count loopless rank-r matroids on n elements without odd automorphisms
+# -------------  Input:
+# n              Int, number of elements
+# r              Int, rank of the matroid
+# -------------  Output:
+# Int            Number of loopless matroids with no odd automorphisms
+
+function ranked_basis_loopless(n::Int, r::Int)
+    S = Polymake.Polydb.find(collection, Dict("RANK" => r, "N_ELEMENTS" => n))
+    nums = length(without_loops(without_odd_automorphisms(collect(S))))
+    return nums
+end
