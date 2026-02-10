@@ -1,0 +1,194 @@
+using Oscar
+
+# reindexing basis elements into Macaulay2 0-based indexing
+# -------------  Input:
+# s              String
+# -------------  Output:
+# s a reindexed string wrapped in braces
+function reindex(s)
+    # Map x -> x - 1 over every element, then sort and format
+    zero_indexed_set = map(x -> x - 1, collect(s))
+    return "{" * join(sort(zero_indexed_set), ", ") * "}"
+end
+
+# filtering loopless matroids from Sage output in Julia
+# -------------  Input:
+# sage_matroids  String
+# julia_matroids String
+# -------------  Output:
+# a pdf file with filtered matroids written in Julia format
+function sage_to_julia_loopless(sage_matroids::String, julia_matroids::String)
+    passed_matroids = Tuple{Matroid, Vector{Int}}[]
+    current_bases = Vector{Vector{Int}}()
+
+    open(sage_matroids) do file
+        for line in eachline(file)
+            if startswith(line, "# MATROID")
+                if !isempty(current_bases)
+                    n = maximum(union(current_bases...))
+                    gs = collect(1:n)
+                    M = matroid_from_bases(current_bases, gs)
+
+                    has_odd_generator = false
+                    aut_group = automorphism_group(M)
+                    for p in gens(aut_group)
+                        if sign(p) == -1
+                            has_odd_generator = true
+                            break
+                        end
+                    end
+                    
+                    if !has_odd_generator && length(M.LOOPS) == 0 
+                        push!(passed_matroids, (M, gs))
+                    end
+
+                end 
+                current_bases = Vector{Vector{Int}}()
+            elseif !isempty(strip(line))
+                basis = parse.(Int, split(line)) .+ 1
+                push!(current_bases, basis)
+            end 
+        end 
+    end 
+
+    if !isempty(current_bases)
+        n = maximum(union(current_bases...))
+        gs = collect(1:n)
+        M = matroid_from_bases(current_bases, gs)
+
+        has_odd_generator = false
+        aut_group = automorphism_group(M)
+        for p in gens(aut_group); if sign(p) == -1; has_odd_generator = true; break; end; end
+        if !has_odd_generator
+            push!(passed_matroids, (M, gs))
+        end
+    end
+
+    println("Found $(length(passed_matroids)) matroids that passed the filter.")
+    export_matroids_to_file(julia_matroids, passed_matroids)
+    return length(passed_matroids)
+end
+
+# filtering simple matroids from Sage output in Julia
+# -------------  Input:
+# sage_matroids  String
+# julia_matroids String
+# -------------  Output:
+# a pdf file with filtered matroids written in Julia format
+function sage_to_julia_simple(sage_matroids::String, julia_matroids::String)
+    passed_matroids = Tuple{Matroid, Vector{Int}}[]
+    current_bases = Vector{Vector{Int}}()
+
+    open(sage_matroids) do file
+        for line in eachline(file)
+            if startswith(line, "# MATROID")
+                if !isempty(current_bases)
+
+                    # create the corresponding matroid in Oscar
+                    n = maximum(union(current_bases...))
+                    gs = collect(1:n)
+                    M = matroid_from_bases(current_bases, gs)
+
+                    has_odd_generator = false
+                    aut_group = automorphism_group(M)
+                    
+                    # records all signs of automorphisms
+                    for p in gens(aut_group)
+                        if sign(p) == -1
+                            has_odd_generator = true
+                            break
+                        end
+                    end
+                    
+                    # choose attribute according to which we filter
+                    if !has_odd_generator && M.SIMPLE # replace with M.BINARY or M.TERNARY or M.REGULAR
+                        push!(passed_matroids, (M, gs))
+                    end
+                    
+                end 
+                current_bases = Vector{Vector{Int}}()
+            elseif !isempty(strip(line))
+                basis = parse.(Int, split(line)) .+ 1
+                push!(current_bases, basis)
+            end 
+        end 
+    end 
+
+    if !isempty(current_bases)
+        n = maximum(union(current_bases...))
+        gs = collect(1:n)
+        M = matroid_from_bases(current_bases, gs)
+
+        has_odd_generator = false
+        aut_group = automorphism_group(M)
+        for p in gens(aut_group); if sign(p) == -1; has_odd_generator = true; break; end; end
+        if !has_odd_generator
+            push!(passed_matroids, (M, gs))
+        end
+    end
+
+    println("Found $(length(passed_matroids)) matroids that passed the filter.")
+    export_matroids_to_file(julia_matroids, passed_matroids)
+    return length(passed_matroids)
+end
+
+# converting a file of matroids in Julia syntax to a file Macaulay2 syntax
+# -------------  Input:
+# filename       String
+# julia_matroids Vector{Tuple{Matroid, Vector{Int}}}
+# -------------  Output:
+# a pdf file with matroids written in Macaulay2 format
+function julia_to_M2(filename::String, julia_matroids::Vector{Tuple{Matroid, Vector{Int}}})
+    open(filename, "w") do f
+        write(f, "{\n") # Write the opening brace
+
+        # --- Main loop for all but the last matroid ---
+        for i in 1:length(julia_matroids) - 1
+            M, gs = julia_matroids[i]
+            
+            ground_set_str = reindex(gs)
+            basis_list = bases(M)
+            
+            write(f, "  matroid($(ground_set_str),{\n")
+            
+            # Loop through all but the last basis
+            for j in 1:length(basis_list) - 1
+                basis_str = reindex(basis_list[j])
+                write(f, "    $(basis_str),\n")
+            end
+            # Handle the last basis separately to remove the comma
+            if !isempty(basis_list)
+                last_basis_str = reindex(basis_list[end])
+                write(f, "    $(last_basis_str)\n")
+            end
+            
+            write(f, "  }),\n") # Closing parenthesis with a comma
+        end
+
+        # --- Handle the very last matroid in the entire file ---
+        if !isempty(julia_matroids)
+            M_last, gs_last = julia_matroids[end]
+            
+            ground_set_str = reindex(gs_last)
+            basis_list = bases(M_last)
+
+            write(f, "  matroid($(ground_set_str),{\n")
+            
+            # Loop through all but the last basis
+            for j in 1:length(basis_list) - 1
+                basis_str = reindex(basis_list[j])
+                write(f, "    $(basis_str),\n")
+            end
+            # Handle the last basis separately
+            if !isempty(basis_list)
+                last_basis_str = reindex(basis_list[end])
+                write(f, "    $(last_basis_str)\n")
+            end
+            
+            write(f, "  })\n") # No final comma
+        end
+
+        write(f, "}\n") # Write the final closing brace
+    end
+    println("Successfully exported $(length(julia_matroids)) matroids in M2 format to $(filename).")
+end
