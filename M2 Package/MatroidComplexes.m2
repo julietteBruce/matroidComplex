@@ -276,6 +276,24 @@ createDiffMatrixFile (ZZ, ZZ, String) := (n, r, s) -> (
     close(f)
     )
 
+readDiffMatrixFile = method();
+readDiffMatrixFile (ZZ, ZZ, String) := (n, r, s) -> ( 
+    fileName := "diffs/"|toString(s)|"/diff_"|toString(s)|"_"|toString(n)|"_"|toString(r)|".txt";
+    if not fileExists fileName then {}
+    else (
+	value get fileName
+	)
+    )
+
+createDiffRankFile = method();
+createDiffRankFile (ZZ, ZZ, String) := (n, r, s) -> (
+    basisList := rankedBasis(n,r);
+    fileName := "ranks/"|toString(s)|"/ranks_"|toString(s)|"_"|toString(n)|"_"|toString(r)|".txt";
+    f := openOut fileName;
+    f << toExternalString rank readDiffMatrixFile(n, r, s);
+    f << endl;
+    close(f)
+    )
 
 --------------------------- homologyRank ---------------------------
 --------------------------------------------------------------------
@@ -527,6 +545,9 @@ apply(basisFull,n->apply(n,r->#r))
 --
 apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffMatrixFile(n,r, "basis"))));
 apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffMatrixFile(9,r, "basis")));
+--
+apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffRankFile(n,r, "basis"))));
+apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffRankFile(9,r, "basis")));
 
 
 -----------------------  GRAPHIC BASIS   ---------------------------
@@ -539,6 +560,9 @@ apply(graphic,n->apply(n,r->#r))
 --
 apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffMatrixFile(n,r, "graphic"))));
 apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffMatrixFile(9,r, "graphic")));
+--
+apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffRankFile(n,r, "graphic"))));
+apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffRankFile(9,r, "graphic")));
 
 
 -----------------------  COGRAPHIC BASIS   -------------------------
@@ -551,6 +575,9 @@ apply(cographic,n->apply(n,r->#r))
 --
 apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffMatrixFile(n,r, "cographic"))));
 apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffMatrixFile(9,r, "cographic")));
+--
+apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffRankFile(n,r, "cographic"))));
+apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffRankFile(9,r, "cographic")));
 
 -----------------------  REGULAR BASIS   -------------------------
 --------------------------------------------------------------------
@@ -562,6 +589,9 @@ apply(regMatroids,n->apply(n,r->#r))
 --
 apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffMatrixFile(n,r, "regular"))));
 apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffMatrixFile(9,r, "regular")));
+--
+apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffRankFile(n,r, "regular"))));
+apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffRankFile(9,r, "regular")));
 
 -------------------------  BINARY BASIS  ---------------------------
 --------------------------------------------------------------------
@@ -573,6 +603,9 @@ apply(binary,n->apply(n,r->#r))
 --
 apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffMatrixFile(n,r, "binary"))));
 apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffMatrixFile(9,r, "binary")));
+--
+apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffRankFile(n,r, "binary"))));
+apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffRankFile(9,r, "binary")));
 
 ------------------------  TERNARY BASIS  ---------------------------
 --------------------------------------------------------------------
@@ -584,6 +617,9 @@ apply(ternary,n->apply(n,r->#r))
 --
 apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffMatrixFile(n,r, "ternary"))));
 apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffMatrixFile(9,r, "ternary")));
+--
+apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffRankFile(n,r, "ternary"))));
+apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffRankFile(9,r, "ternary")));
 
 -------------------------  SIMPLE BASIS  ---------------------------
 --------------------------------------------------------------------
@@ -595,6 +631,9 @@ apply(simple,n->apply(n,r->#r))
 --
 apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffMatrixFile(n,r, "simple"))));
 apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffMatrixFile(9,r, "simple")));
+--
+apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time createDiffRankFile(n,r, "simple"))));
+apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffRankFile(9,r, "simple")));
 
 
 -------------------------  slcREGULAR BASIS  ---------------------------
@@ -603,4 +642,5 @@ slcReg = apply(toList(1..15), n->apply(toList(0..n), r->(try readBasisFile(n,r,"
 apply(slcReg,n->apply(n,r->(if not instance(r,List) then infinity else #r)))
 --
 apply(toList(1..15), n->apply(toList(0..n), r->( print toString(n,r); time createDiffMatrixFile(n,r, "slcRegular"))));
-
+--
+apply(toList(1..15), n->apply(toList(0..n), r->( print toString(n,r); time createDiffRankFile(n,r, "slcRegular"))));
