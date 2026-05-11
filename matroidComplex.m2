@@ -57,12 +57,16 @@ diffMatrixColumn (Matroid, List) := (M,targetBasis)-> (
     -- Rewrite alternating sum of deletion matroid classes in C_{n-1} 
     -- to the corresponding sum in QQ^{dim C_{n-1}} wrt the std basis
     scan(noncoloops, e -> (
+        D := deletion(M, set {e});
         scan(#targetBasis, j -> (
-            if areIsomorphic(deletion(M, set {e}),targetBasis#j) then (
-                column#j = column#j + (-1)^(e+1)
-                )
-        ))
-    ));
+            isos = isomorphism(D, targetBasis#j);
+            if isos != null then (
+                -- Correct paper convention for Macaulay2's 0-based labels:
+		print permutationSign(isos);
+                column#j = column#j + (-1)^e * permutationSign(isos)
+		)
+	    ))
+        ));
     -- return immutable list
     toList(column)
 )
