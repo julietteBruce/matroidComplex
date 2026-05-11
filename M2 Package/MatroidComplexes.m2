@@ -273,7 +273,6 @@ diffMatrix(ZZ,ZZ,String) := (n,r,s) -> (
 -------------------------------------------------------------------- 
 createDiffMatrixFile = method();
 createDiffMatrixFile (ZZ, ZZ, String) := (n, r, s) -> (
-    basisList := rankedBasis(n,r);
     fileName := "diffs/"|toString(s)|"/diff_"|toString(s)|"_"|toString(n)|"_"|toString(r)|".txt";
     f := openOut fileName;
     f << toExternalString diffMatrix(n, r, s);
