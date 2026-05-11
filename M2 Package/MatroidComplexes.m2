@@ -677,3 +677,8 @@ apply(slcReg,n->apply(n,r->(if not instance(r,List) then infinity else #r)))
 apply(toList(1..15), n->apply(toList(0..n), r->( print toString(n,r); time createDiffMatrixFile(n,r, "slcRegular"))));
 --
 apply(toList(1..15), n->apply(toList(0..n), r->( print toString(n,r); time createDiffRankFile(n,r, "slcRegular"))));
+--
+apply(toList(1..14), n->apply(toList(0..n), r->( print toString(n,r); time createHomologyFile(n,r, "slcRegular"))));
+slcRegHom = apply(toList(1..14), n-> apply(toList(0..n), r->(readHomologyFile(n,r,"slcRegular"))))
+
+
