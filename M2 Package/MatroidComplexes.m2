@@ -79,7 +79,12 @@ export {
   "isCographic",
   "isRegularMatroid",
   "isTernary",
-  "createDiffMatrixFile"
+  "createDiffMatrixFile",
+  "readDiffMatrixFile",
+  "createDiffRankFile",
+  "readDiffRankFile",
+  "createHomologyFile",
+  "readHomologyFile"
   }
 
 --------------------------------------------------------------------
@@ -316,6 +321,14 @@ createHomologyFile (ZZ, ZZ, String) := (n, r, s) -> (
     close(f)
     )
 
+readHomologyFile = method();
+readHomologyFile (ZZ, ZZ, String) := (n, r, s) -> ( 
+    fileName := "homology/"|toString(s)|"/homology_"|toString(s)|"_"|toString(n)|"_"|toString(r)|".txt";
+    if not fileExists fileName then {}
+    else (
+	value get fileName
+	)
+    )
 --------------------------- homologyRank ---------------------------
 --------------------------------------------------------------------
 ----- INPUT: (n,r,string)
@@ -657,7 +670,7 @@ apply(toList(1..8), n->apply(toList(0..n), r->( print toString(n,r); time create
 apply({0,1,2,3,6,7,8,9}, r -> ( print toString(9,r); time createDiffRankFile(9,r, "simple")));
 
 
--------------------------  slcREGULAR BASIS  ---------------------------
+-----------------------  slcREGULAR BASIS  -------------------------
 --------------------------------------------------------------------
 slcReg = apply(toList(1..15), n->apply(toList(0..n), r->(try readBasisFile(n,r,"slcRegular") else infinity)))
 apply(slcReg,n->apply(n,r->(if not instance(r,List) then infinity else #r)))
