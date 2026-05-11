@@ -287,10 +287,31 @@ readDiffMatrixFile (ZZ, ZZ, String) := (n, r, s) -> (
 
 createDiffRankFile = method();
 createDiffRankFile (ZZ, ZZ, String) := (n, r, s) -> (
-    basisList := rankedBasis(n,r);
     fileName := "ranks/"|toString(s)|"/ranks_"|toString(s)|"_"|toString(n)|"_"|toString(r)|".txt";
     f := openOut fileName;
     f << toExternalString rank readDiffMatrixFile(n, r, s);
+    f << endl;
+    close(f)
+    )
+
+readDiffRankFile = method();
+readDiffRankFile (ZZ, ZZ, String) := (n, r, s) -> ( 
+    fileName := "ranks/"|toString(s)|"/ranks_"|toString(s)|"_"|toString(n)|"_"|toString(r)|".txt";
+    if not fileExists fileName then 0
+    else (
+	value get fileName
+	)
+    )
+
+createHomologyFile = method();
+createHomologyFile (ZZ, ZZ, String) := (n, r, s) -> ( 
+    fileName := "homology/"|toString(s)|"/homology_"|toString(s)|"_"|toString(n)|"_"|toString(r)|".txt";
+    f := openOut fileName;
+    dimCnr := #readBasisFile(n,r,s);
+    dimOut := readDiffRankFile(n,r,s);
+    dimIn := readDiffRankFile(n+1,r,s);
+    rankHom := dimCnr - dimOut - dimIn;
+    f << toExternalString rankHom;
     f << endl;
     close(f)
     )
