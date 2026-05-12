@@ -682,3 +682,62 @@ apply(toList(1..14), n->apply(toList(0..n), r->( print toString(n,r); time creat
 slcRegHom = apply(toList(1..14), n-> apply(toList(0..n), r->(readHomologyFile(n,r,"slcRegular"))))
 
 
+--------------------------------------------------------------------
+----------------  slcRegular WHEEL TESTS  --------------------------
+--------------------------- (n, r) = (6, 3) 
+M = matroid wheelGraph 4 -- M2 uses #vertices
+withoutOddAut(M)
+-- There are no classes for n = 5 or n = 7 so since M is connected,
+-- simple, loopless, and regular it is enough to show that M has
+-- no odd automorphism to know its class gives the homology class
+
+--------------------------- (n, r) = (10, 5) 
+M = matroid wheelGraph 6 -- M2 uses #vertices
+withoutOddAut(M)
+--
+B = readBasisFile(10,5,"slcRegular"); -- 2 elements
+v = matrix vector apply(#B, i-> if areIsomorphic(B#i,M) then 1 else 0) -- creates vector represeting M in our basis
+v = v**QQ; -- need Q-coeffs
+--
+dOut = readDiffMatrixFile(10,5,"slcRegular") -- zero map
+dOut*v -- check in kernel
+dIn = readDiffMatrixFile(11,5,"slcRegular")
+rank (dIn|v) - rank dIn -- check rank goes up by one when concatenating v to dIn to check not in image
+
+--------------------------- (n, r) = (14, 7) 
+M = matroid wheelGraph 8 -- M2 uses #vertices
+withoutOddAut(M)
+--
+B = readBasisFile(14,7,"slcRegular");
+v = matrix vector apply(#B, i-> if areIsomorphic(B#i,M) then 1 else 0) -- creates vector represeting M in our basis
+v = v**QQ; -- need Q-coeffs
+--
+dOut = readDiffMatrixFile(14,7,"slcRegular") -- zero map
+dOut*v -- check in kernel
+dIn = readDiffMatrixFile(15,7,"slcRegular")
+rank (dIn|v) - rank dIn -- check rank goes up by one when concatenating v to dIn to check not in image
+
+
+--------------------------------------------------------------------
+--------------  slcRegular Identify Basi  --------------------------
+--------------------------- (n, r) = (1, 1) dim = 1
+M1 = uniformMatroid(1,1)
+withoutOddAut(M1)
+apply(readBasisFile(1,1,"slcRegular"), N -> areIsomorphic(M1,N)) -- returns true in the spot in the basis
+
+--------------------------- (n, r) = (6, 3)  dim = 1
+M1 = matroid wheelGraph 4 -- M2 uses #vertices
+withoutOddAut(M1)
+apply(readBasisFile(6,3,"slcRegular"), N -> areIsomorphic(M1,N)) -- returns true in the spot in the basis
+
+--------------------------- (n, r) = (10, 5) dim = 2
+M1 = matroid wheelGraph 6 -- M2 uses #vertices
+withoutOddAut(M1)
+apply(readBasisFile(10,5,"slcRegular"), N -> areIsomorphic(M1,N)) -- returns true in the spot in the basis
+--
+K = completeGraph 6
+G = deleteEdges(K, {{0,1},{1,2},{2,3},{3,4},{4,5}}) -- vertices of K are 0,1,2,3,4,5. Delet Path: 0-1-2-3-4-5
+M2 = matroid G
+withoutOddAut(M2)
+apply(readBasisFile(10,5,"slcRegular"), N -> areIsomorphic(M2,N)) -- returns true in the spot in the basis
+
